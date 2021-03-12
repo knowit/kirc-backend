@@ -1,9 +1,13 @@
 buildscript {
 	ext {
+		generatedSources = "$rootDir/build/generated-sources"
+
 		springBootVersion = "2.4.3"
 		springDependencyManagementVersion = "1.0.11.RELEASE"
 		kotlinVersion = "1.4.30"
 		openApiGeneratorVersion = "5.0.1"
+		javaxValidationVersion = "2.0.1.Final"
+		loremVersion = "2.1"
 	}
 	repositories {
 		mavenCentral()
@@ -38,6 +42,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+	implementation("org.springframework.boot:spring-boot-starter-json")
+	implementation("javax.validation:validation-api:$javaxValidationVersion")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
@@ -45,26 +51,28 @@ dependencies {
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
+	implementation("com.thedeanda:lorem:$loremVersion")
 }
 
-test {
-	useJUnitPlatform()
-}
+test { useJUnitPlatform() }
+clean.doFirst { delete("$generatedSources") }
 
 task generateMessagesSpec(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
 	validateSpec = true
 	inputSpec = "messages.yml"
 	generatorName = "kotlin-spring"
-	outputDir = "$rootDir/build/generated-sources/openapi/messages"
-	modelPackage = "org.entur.kirc.api"
+	outputDir = "$generatedSources/openapi/messages"
+	modelPackage = "no.knowit.kirc.api"
+	apiPackage = "no.knowit.kirc.api"
+	ignoreFileOverride = ".openapi-generator-ignore"
 	configOptions = [
 			enumPropertyNaming: 'UPPERCASE',
-			interfaceOnly     : 'true',
+			interfaceOnly     : 'false',
 			gradleBuildFile   : 'false',
 			title             : 'Products',
 			exceptionHandler  : 'false',
 			useTags           : 'true',
-			serviceInterface  : 'false',
+			serviceInterface  : 'true',
 			serializableModel : 'false'
 	]
 	typeMappings = [
@@ -73,21 +81,32 @@ task generateMessagesSpec(type: org.openapitools.generator.gradle.plugin.tasks.G
 	additionalProperties = [
 			openApiNullable: "false",
 			removeEnumValuePrefix: "false"
+
 	]
 }
 
 idea {
 	module {
-		outputDir file('build/classes/main')
-		testOutputDir file('build/classes/test')
+		outputDir file("$rootDir/build/classes/main")
+		testOutputDir file("$rootDir/build/classes/test")
+		generatedSourceDirs += file("$generatedSources/openapi/messages/src/main/kotlin")
 	}
-	module {
-		generatedSourceDirs += file("$rootDir/build/generated-sources/openapi/messages")
+}
+sourceSets {
+	main {
+		kotlin {
+			srcDirs "$generatedSources/openapi/messages/src/main/kotlin"
+		}
 	}
 }
 
+task deleteFiles(type: Delete) {
+	delete "$generatedSources/openapi/messages/src/main/kotlin/no/knowit/kirc/api/ApiUtil.kt"
+}
+deleteFiles.dependsOn generateMessagesSpec
+
 compileKotlin {
-	dependsOn tasks.generateMessagesSpec
+	dependsOn tasks.deleteFiles
 	kotlinOptions {
 		freeCompilerArgs = ["-Xjsr305=strict"]
 		jvmTarget = "11"
