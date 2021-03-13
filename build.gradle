@@ -38,20 +38,19 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-rsocket")
-	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 	implementation("org.springframework.boot:spring-boot-starter-json")
-	implementation("javax.validation:validation-api:$javaxValidationVersion")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	implementation("javax.validation:validation-api")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("io.projectreactor:reactor-test")
 	implementation("com.thedeanda:lorem:$loremVersion")
+	implementation("org.thymeleaf:thymeleaf")
+	implementation("org.thymeleaf:thymeleaf-spring5")
 }
 
 test { useJUnitPlatform() }
@@ -76,7 +75,7 @@ task generateMessagesSpec(type: org.openapitools.generator.gradle.plugin.tasks.G
 			serializableModel : 'false'
 	]
 	typeMappings = [
-			'java.time.OffsetDateTime': 'java.time.ZonedDateTime'
+			'java.time.OffsetDateTime': 'java.time.LocalDateTime'
 	]
 	additionalProperties = [
 			openApiNullable: "false",
@@ -102,6 +101,7 @@ sourceSets {
 
 task deleteFiles(type: Delete) {
 	delete "$generatedSources/openapi/messages/src/main/kotlin/no/knowit/kirc/api/ApiUtil.kt"
+	delete "$generatedSources/openapi/messages/src/main/kotlin/org/openapitools/Application.kt"
 }
 deleteFiles.dependsOn generateMessagesSpec
 

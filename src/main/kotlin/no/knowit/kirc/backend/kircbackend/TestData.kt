@@ -1,11 +1,13 @@
 package no.knowit.kirc.backend.kircbackend
 
-import no.knowit.kirc.api.Message
-import java.time.ZonedDateTime
-import java.util.UUID
-import com.thedeanda.lorem.LoremIpsum
-
 import com.thedeanda.lorem.Lorem
+import com.thedeanda.lorem.LoremIpsum
+import no.knowit.kirc.api.Message
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalDateTime
+import java.util.UUID
+import java.util.concurrent.ThreadLocalRandom
 import kotlin.random.Random
 
 
@@ -15,7 +17,7 @@ object TestData {
     fun createMessage(): Message {
         return Message(
                 id = UUID.randomUUID(),
-                timestamp = ZonedDateTime.now(),
+                timestamp = LocalDateTime.now(),
                 message = lorem.getWords(Random.nextInt(100))
         )
     }

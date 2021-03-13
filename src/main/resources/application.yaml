@@ -1,0 +1,22 @@
+logging:
+  level:
+    web: DEBUG
+    org:
+      springframework:
+        web:
+          servlet:
+            mvc:
+              method:
+                annotation:
+                  RequestMappingHandlerMapping: TRACE
+
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: Message
