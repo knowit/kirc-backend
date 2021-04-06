@@ -12,7 +12,7 @@ import java.util.UUID
 data class MessageEntity(
         @Id
         val id: String,
-        val timestamp: LocalDateTime,
+        val timestamp: ZonedDateTime,
         val message: String,
         val nickname: String? = null,
         val style: String? = null

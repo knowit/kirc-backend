@@ -6,8 +6,8 @@ import no.knowit.kirc.api.Message
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.util.UUID
-import java.util.concurrent.ThreadLocalRandom
 import kotlin.random.Random
 
 
@@ -17,7 +17,7 @@ object TestData {
     fun createMessage(): Message {
         return Message(
                 id = UUID.randomUUID(),
-                timestamp = LocalDateTime.now(),
+                timestamp = ZonedDateTime.now(),
                 message = lorem.getWords(Random.nextInt(100))
         )
     }

@@ -75,7 +75,7 @@ task generateMessagesSpec(type: org.openapitools.generator.gradle.plugin.tasks.G
 			serializableModel : 'false'
 	]
 	typeMappings = [
-			'java.time.OffsetDateTime': 'java.time.LocalDateTime'
+			'java.time.OffsetDateTime': 'java.time.ZonedDateTime'
 	]
 	additionalProperties = [
 			openApiNullable: "false",
