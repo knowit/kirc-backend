@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.ArrayList
@@ -23,11 +25,12 @@ class MongoDbConfig {
 }
 
 class ZonedDateTimeReadConverter : Converter<String, ZonedDateTime> {
-    var dateTimeFormatter = DateTimeFormatter.ofPattern("[yyyyMMdd][yyyy-MM-dd][yyyy-DDD]['T'[HHmmss][HHmm][HH:mm:ss][HH:mm][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]][XXX][XX][X]", Locale.getDefault())
+    var dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.nnnnnn")
 
 
     override fun convert(date: String): ZonedDateTime {
-        return ZonedDateTime.parse(date, dateTimeFormatter)
+        val ldt = LocalDateTime.parse(date, dateTimeFormatter)
+        return ZonedDateTime.of(ldt, ZoneId.of("UTC"))
     }
 
 }
