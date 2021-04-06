@@ -23,7 +23,7 @@ class MongoDbConfig {
 }
 
 class ZonedDateTimeReadConverter : Converter<String, ZonedDateTime> {
-    val dtf = DateTimeFormatter.ofPattern("YYYY-MM-DDTkk:mm:ss.SSSSSS", Locale.getDefault())
+    val dtf = DateTimeFormatter.ofPattern("YYYY-MM-DD'T'kk:mm:ss.SSSSSS", Locale.getDefault())
 
     override fun convert(date: String): ZonedDateTime {
         return ZonedDateTime.parse(date, dtf)
