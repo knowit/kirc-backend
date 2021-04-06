@@ -23,7 +23,7 @@ class MongoDbConfig {
 }
 
 class ZonedDateTimeReadConverter : Converter<String, ZonedDateTime> {
-    var dateTimeFormatter = DateTimeFormatter.ofPattern("[yyyyMMdd][yyyy-MM-dd][yyyy-DDD]['T'[HHmmss][HHmm][HH:mm:ss][HH:mm][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]][XXX][XX][X]")
+    var dateTimeFormatter = DateTimeFormatter.ofPattern("[yyyyMMdd][yyyy-MM-dd][yyyy-DDD]['T'[HHmmss][HHmm][HH:mm:ss][HH:mm][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]][XXX][XX][X]", Locale.getDefault())
 
 
     override fun convert(date: String): ZonedDateTime {
