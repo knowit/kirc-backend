@@ -1,33 +1,38 @@
 package no.knowit.kirc.backend.kircbackend
 
-import com.mongodb.lang.Nullable
-import org.bson.Document
-import org.bson.json.Converter
-import org.bson.json.StrictJsonWriter
-import java.time.ZonedDateTime
-
-import org.springframework.data.convert.WritingConverter
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.core.convert.converter.Converter
 import org.springframework.stereotype.Component
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.util.Date
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions
+
+import java.util.ArrayList
 
 
-@Component
-@WritingConverter
-class ZonedDateTimeToDocumentConverter : Converter<ZonedDateTime> {
-    fun convert(@Nullable zonedDateTime: ZonedDateTime): Document {
-        val document = Document()
-        document[DATE_TIME] = Date.from(zonedDateTime.toInstant())
-        document[ZONE] = zonedDateTime.zone.id
-        document["offset"] = zonedDateTime.offset.toString()
-        return document
+
+
+@Configuration
+class MongoDbConfig {
+
+    @Bean
+    fun customConversions(): MongoCustomConversions {
+        val converters: MutableList<Converter<*, *>> = ArrayList()
+        converters.add(ZonedDateTimeReadConverter())
+        converters.add(ZonedDateTimeWriteConverter())
+        return MongoCustomConversions(converters)
     }
-
-    companion object {
-        const val DATE_TIME = "dateTime"
-        const val ZONE = "zone"
+}
+class ZonedDateTimeReadConverter : Converter<Date, ZonedDateTime> {
+    override fun convert(date: Date): ZonedDateTime {
+        return date.toInstant().atZone(ZoneOffset.UTC)
     }
+}
 
-    override fun convert(value: ZonedDateTime, writer: StrictJsonWriter) {
-
+class ZonedDateTimeWriteConverter : Converter<ZonedDateTime, Date> {
+    override fun convert(zonedDateTime: ZonedDateTime): Date {
+        return Date.from(zonedDateTime.toInstant())
     }
 }
