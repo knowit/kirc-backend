@@ -9,7 +9,7 @@ class MessageService(val messageRepository: MessageRepository) {
     fun getLatestMessages(): List<Message> {
         return messageRepository.findAll()
                 .map { it.toDTO() }
-                .sortedByDescending { it.timestamp }
+                .sortedBy { it.timestamp }
     }
 
     fun createNewTestMessages() {
