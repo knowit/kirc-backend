@@ -26,20 +26,15 @@ class MongoDbConfig {
 }
 
 class ZonedDateTimeReadConverter : Converter<String, ZonedDateTime> {
-    var dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.nnnnnn")
-
+    var dateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME
 
     override fun convert(date: String): ZonedDateTime {
-        val ldt = LocalDateTime.parse(date, dateTimeFormatter)
-        return ZonedDateTime.of(ldt, ZoneId.of("UTC"))
+        return ZonedDateTime.parse(date, dateTimeFormatter)
     }
 
 }
 
 class ZonedDateTimeFromDateReadConverter : Converter<Date, ZonedDateTime> {
-    var dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.nnnnnn")
-
-
     override fun convert(date: Date): ZonedDateTime {
         return ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC"))
     }
